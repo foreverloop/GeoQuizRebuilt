@@ -9,11 +9,22 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
 
     private Button mTrueButton;
     private Button mFalseButton;
+    private Button mNextButton;
+    private TextView mQuestionTextview;
+
+    private Question[] mQuestionBank = {new Question(R.string.question_oceans,true),
+                                        new Question(R.string.question_mideast,false),
+                                        new Question(R.string.question_africa,false),
+                                        new Question(R.string.question_americas,true),
+                                        new Question(R.string.question_asia,true)};
+    private int mCurrentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +35,8 @@ public class QuizActivity extends AppCompatActivity {
 
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
+        mQuestionTextview = (TextView) findViewById(R.id.question_textview);
+        mNextButton = (Button) findViewById(R.id.next_button);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -34,19 +47,42 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+        mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
+
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = ++mCurrentIndex % mQuestionBank.length;
+                mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
+            }
+        });
+
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkAnswer(true);
             }
         });
 
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkAnswer(false);
             }
         });
+    }
+
+    private void checkAnswer(boolean userChoice){
+        boolean isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+        int toastText;
+
+        if(isAnswerTrue == userChoice)
+            toastText = R.string.correct;
+        else
+            toastText = R.string.incorrect;
+
+        Toast.makeText(QuizActivity.this,toastText,Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
