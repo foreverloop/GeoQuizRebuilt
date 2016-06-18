@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GeoQuiz</string>
+    <string name="action_settings">Settings</string>
+    <string name="question_text">London is the capital city of England</string>
+    <string name="true_button">true</string>
+    <string name="false_button">false</string>
+    <string name="correct">Correct</string>
+    <string name="incorrect">Incorrect</string>
+</resources>
