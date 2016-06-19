@@ -20,6 +20,8 @@ public class QuizActivity extends AppCompatActivity {
     private Button mNextButton;
     private Button mPrevButton;
     private TextView mQuestionTextview;
+    private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
 
     private Question[] mQuestionBank = {new Question(R.string.question_oceans,true),
                                         new Question(R.string.question_mideast,false),
@@ -35,20 +37,14 @@ public class QuizActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if(savedInstanceState != null)
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
+
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
         mQuestionTextview = (TextView) findViewById(R.id.question_textview);
         mNextButton = (Button) findViewById(R.id.next_button);
         mPrevButton = (Button) findViewById(R.id.prev_button);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
 
@@ -95,6 +91,12 @@ public class QuizActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_INDEX,mCurrentIndex);
     }
 
     private void checkAnswer(boolean userChoice){
