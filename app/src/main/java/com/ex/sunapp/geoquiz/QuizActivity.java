@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mPrevButton;
     private TextView mQuestionTextview;
 
     private Question[] mQuestionBank = {new Question(R.string.question_oceans,true),
@@ -37,6 +39,7 @@ public class QuizActivity extends AppCompatActivity {
         mFalseButton = (Button) findViewById(R.id.false_button);
         mQuestionTextview = (TextView) findViewById(R.id.question_textview);
         mNextButton = (Button) findViewById(R.id.next_button);
+        mPrevButton = (Button) findViewById(R.id.prev_button);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,10 +52,32 @@ public class QuizActivity extends AppCompatActivity {
 
         mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
 
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mCurrentIndex != 0)
+                    --mCurrentIndex;
+                else
+                    mCurrentIndex = (mQuestionBank.length - 1);
+                mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
+            }
+        });
+        
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = ++mCurrentIndex % mQuestionBank.length;
+                mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
+            }
+        });
+
+        mQuestionTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mCurrentIndex < (mQuestionBank.length - 1))
+                    mCurrentIndex++;
+                else
+                    mCurrentIndex = 0;
                 mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
             }
         });
