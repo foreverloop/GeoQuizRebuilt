@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class QuizActivity extends AppCompatActivity {
 
     private Button mTrueButton;
@@ -25,6 +27,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextview;
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String KEY_DID_CHEAT = "com.ex.sunapp.geoquiz.QuizActiviy.key_did_cheat";
     private static final int REQUEST_CODE_CHEAT = 0;
     private boolean mIsCheater;
 
@@ -42,8 +45,10 @@ public class QuizActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(savedInstanceState != null)
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
+        if(savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(KEY_DID_CHEAT,false);
+        }
 
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
@@ -68,10 +73,16 @@ public class QuizActivity extends AppCompatActivity {
         mPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(mIsCheater){
+                    mQuestionBank[mCurrentIndex].setCheated(true);
+                }
+
                 if(mCurrentIndex != 0)
                     --mCurrentIndex;
                 else
                     mCurrentIndex = (mQuestionBank.length - 1);
+
                 mIsCheater = false;
                 mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
             }
@@ -80,6 +91,12 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(mIsCheater){
+                    mQuestionBank[mCurrentIndex].setCheated(true);
+                }
+
+
                 mCurrentIndex = ++mCurrentIndex % mQuestionBank.length;
                 mIsCheater = false;
                 mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
@@ -116,13 +133,14 @@ public class QuizActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_INDEX,mCurrentIndex);
+        outState.putBoolean(KEY_DID_CHEAT,mIsCheater);
     }
 
     private void checkAnswer(boolean userChoice){
         boolean isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int toastText;
 
-        if(mIsCheater)
+        if(mIsCheater || mQuestionBank[mCurrentIndex].isCheated())
             toastText = R.string.judgement_toast;
         else if(isAnswerTrue == userChoice)
             toastText = R.string.correct;
