@@ -2,6 +2,7 @@ package com.ex.sunapp.geoquiz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,6 +26,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mPrevButton;
     private Button mCheatButton;
     private TextView mQuestionTextview;
+    private TextView mSdkTextview;
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
     private static final String KEY_DID_CHEAT = "com.ex.sunapp.geoquiz.QuizActiviy.key_did_cheat";
@@ -56,7 +58,9 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton = (Button) findViewById(R.id.next_button);
         mPrevButton = (Button) findViewById(R.id.prev_button);
         mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mSdkTextview = (TextView) findViewById(R.id.sdk_textview);
 
+        mSdkTextview.setText(String.valueOf(Build.VERSION.SDK_INT));
         mQuestionTextview.setText(getText(mQuestionBank[mCurrentIndex].getTextResId()));
 
         mCheatButton.setOnClickListener(new View.OnClickListener() {
